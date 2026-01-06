@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUCATEME</title>
+</head>
+<body>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUCATEME - Progressive Learning</title>
+</head>
+<body style="margin: 0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1532375810709-75b1da00537c?q=80&w=2076') no-repeat center center fixed; background-size: cover; color: white; min-height: 100vh;">
+
+    <header style="padding: 15px 5%; background: rgba(0,0,0,0.9); display: flex; justify-content: space-between; align-items: center; position: fixed; width: 100%; top:0; z-index: 100; box-sizing: border-box; width: 100%;">
+        <div style="font-weight: bold; font-size: 1.5rem; color: #ff9933;">EDUCATEME</div>
+        <div id="auth-nav"><span id="week-display" style="color:#ff9933; font-weight:bold; border:1px solid #ff9933; padding: 6px 15px; border-radius:5px;">LOCKED</span></div>
+    </header>
+
+    <div id="auth-container" style="height: 100vh; display: flex; justify-content: center; align-items: center;">
+        <div style="background: white; color: #333; padding: 40px; border-radius: 20px; text-align: center; width: 360px;">
+            <h2 id="auth-title">Register</h2>
+            <input type="email" id="user_email" placeholder="Email Address" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px;">
+            <input type="password" id="user_pass" placeholder="Password" style="width: 100%; padding: 12px; margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px;">
+            <button id="auth-btn" onclick="handleAuth()" style="width: 100%; padding: 16px; background: #138808; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%;">CREATE ACCOUNT</button>
+            <p id="toggle-text" style="margin-top: 20px; font-size: 0.8rem; cursor: pointer; color: blue;" onclick="toggleMode()">Already registered? Sign In</p>
+        </div>
+    </div>
+
+    <section id="study-content" style="display: none; padding: 120px 5% 60px; background: #ffffff; color: #333; min-height: 100vh;">
+        <div style="max-width: 1100px; margin: 0 auto;">
+            <h2 id="week-label" style="color: #ff9933; text-align: center; margin-bottom: 5px;"></h2>
+            <h1 id="daily-topic-title" style="text-align: center; margin-top: 0; margin-bottom: 40px;"></h1>
+            
+            <h3>▶ Advanced Video Lessons (3)</h3>
+            <div id="video-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-bottom: 50px;"></div>
+
+            <h3>📷 Daily Infographics (2)</h3>
+            <div id="photo-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 50px;"></div>
+
+            <h3>📝 Essential Notes (5)</h3>
+            <div id="notes-list" style="background: #f8f9fa; padding: 30px; border-radius: 15px; border: 1px solid #eee; display: flex; flex-direction: column; gap: 15px;"></div>
+        </div>
+    </section>
+
+    <script>
+        let isRegisterMode = true;
+        let savedEmail = "", savedPass = "";
+
+        function toggleMode() {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('auth-title').innerText = isRegisterMode ? "Register" : "Sign In";
+            document.getElementById('auth-btn').innerText = isRegisterMode ? "CREATE ACCOUNT" : "SIGN IN";
+            document.getElementById('toggle-text').innerText = isRegisterMode ? "Already registered? Sign In" : "New? Register";
+        }
+
+        function handleAuth() {
+            const email = document.getElementById('user_email').value;
+            const pass = document.getElementById('user_pass').value;
+            if (isRegisterMode) {
+                savedEmail = email; savedPass = pass;
+                alert("Account Created! Use your password to Sign In."); toggleMode();
+            } else {
+                if (email === savedEmail && pass === savedPass) {
+                    document.getElementById('auth-container').style.display = 'none';
+                    document.getElementById('study-content').style.display = 'block';
+                    loadAdvancedContent();
+                } else { alert("Wrong password!"); }
+            }
+        }
+
+        // CONTENT ENGINE
+        const contentData = {
+            week1: {
+                1: { topic: "Intro to AI", v: ["ad79nYk2keg", "2ePf9rue1Ao", "5ngmin95nzo"], n: ["AI basics.", "ML vs AI.", "Data importance.", "Simple bots.", "AI Ethics."] },
+                2: { topic: "Web Foundations", v: ["mU6an7qMCsc", "qz0aGYMCzl0", "hu-q2zYwEYs"], n: ["HTML tags.", "CSS colors.", "Browsers.", "URLs.", "Server basics."] }
+            },
+            week2: {
+                1: { topic: "Neural Networks (ADVANCED)", v: ["aircAruvnKk", "IHZwWFHWa-w", "6pEonLp_Y1A"], n: ["Deep learning.", "Backpropagation.", "Layers.", "Weight tuning.", "GPU power."] },
+                2: { topic: "Backend & Logic (ADVANCED)", v: ["fBNz5xF-Kx4", "C72WadePQ_8", "pQN-pnXPaVg"], n: ["JavaScript Logic.", "API calls.", "Database SQL.", "Node.js.", "Security headers."] }
+            }
+        };
+
+        function loadAdvancedContent() {
+            const now = new Date();
+            const start = new Date(now.getFullYear(), 0, 0);
+            const diff = now - start;
+            const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+            
+            // Calculate current Week (Week 1, 2, 3...)
+            const currentWeekNum = Math.ceil(dayOfYear / 7);
+            const weekKey = currentWeekNum % 2 === 0 ? "week2" : "week1"; // Alternates/Advances
+            const dayOfWeek = now.getDay() || 1; // 1-7
+
+            const data = contentData[weekKey][dayOfWeek] || contentData["week1"][1];
+
+            document.getElementById('week-label').innerText = "PROGRESS: WEEK " + currentWeekNum;
+            document.getElementById('daily-topic-title').innerText = data.topic;
+
+            // Load Videos
+            let vHtml = "";
+            data.v.forEach(id => {
+                vHtml += `<div style="background:#000; border-radius:15px; overflow:hidden;"><iframe width="100%" height="220" src="https://www.youtube.com/embed/${id}" frameborder="0" allowfullscreen></iframe></div>`;
+            });
+            document.getElementById('video-grid').innerHTML = vHtml;
+
+            // Load Photos
+            document.getElementById('photo-grid').innerHTML = `<img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" style="width:100%; border-radius:15px;"><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600" style="width:100%; border-radius:15px;">`;
+
+            // Load Notes
+            let nHtml = "";
+            data.n.forEach((note, i) => { nHtml += `<div style="padding-bottom:10px; border-bottom:1px solid #eee;"><b>0${i+1}.</b> ${note}</div>`; });
+            document.getElementById('notes-list').innerHTML = nHtml;
+        }
+    </script>
+</body>
+</html>
+</body>
+</html>
